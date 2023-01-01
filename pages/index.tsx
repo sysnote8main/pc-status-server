@@ -61,6 +61,67 @@ export default function Home() {
             <header>
                 <div className="navbar bg-base-50">
                     <div className="navbar-start">
+                        <div className="dropdown">
+                            <label
+                                tabIndex={0}
+                                className="btn btn-ghost btn-circle"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M4 6h16M4 12h16M4 18h7"
+                                    />
+                                </svg>
+                            </label>
+                            <ul
+                                tabIndex={0}
+                                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                            >
+                                {Object.keys(status || {})
+                                    .filter((pc) =>
+                                        (status || {})[pc]?.hostname.includes(
+                                            searchIndex || ""
+                                        )
+                                    )
+                                    .sort(
+                                        (pc, opc) =>
+                                            Number(
+                                                Boolean((status || {})[pc]?.gpu)
+                                            ) -
+                                            Number(
+                                                Boolean(
+                                                    (status || {})[opc]?.gpu
+                                                )
+                                            )
+                                    )
+                                    .map((pc) => (
+                                        <li key={pc}>
+                                            {
+                                                <a
+                                                    href={
+                                                        "/#" +
+                                                        (status || {})[pc]
+                                                            ?.hostname
+                                                    }
+                                                >
+                                                    {
+                                                        (status || {})[pc]
+                                                            ?.hostname
+                                                    }
+                                                </a>
+                                            }
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
                         {`Connected Computers: ${
                             Object.keys(status || {}).length
                         }`}

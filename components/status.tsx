@@ -31,7 +31,10 @@ function selectIcon(osName: string): string {
 const Status = ({ children, status, pc }: Props) => {
     return (
         <Fragment key={pc}>
-            <div className="card w-128 bg-base-60 shadow-xl">
+            <div
+                className="card w-128 bg-base-60 shadow-xl"
+                id={(status || {})[pc]?.hostname}
+            >
                 <div className="card-body">
                     <div className="avatar center">
                         <div className="w-12">
