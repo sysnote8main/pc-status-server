@@ -1,5 +1,6 @@
-import { Fragment, ReactNode } from "react"
+import { Fragment, ReactNode, useEffect, useState } from "react"
 import { ClientData } from "../types/client"
+import { useRouter } from "next/router"
 
 type Props = {
     children?: ReactNode
@@ -28,12 +29,48 @@ function selectIcon(osName: string): string {
     }
 }
 
+function usageBarColor(percent: Number): string {
+    if (percent > 90) return "error"
+    if (percent > 75) return "warning"
+    return "info"
+}
+
 const Status = ({ children, status, pc }: Props) => {
+    const [hash, setHash] = useState({})
+    const { isReady } = useRouter()
+
+    useEffect(() => {
+        if (isReady) {
+            const hashData = decodeURI(location.hash.replace(/#/, ""))
+            const border =
+                hashData === (status || {})[pc]?.hostname
+                    ? {
+                          border: "solid",
+                      }
+                    : {}
+            setHash(border)
+        }
+    }, [isReady])
+
+    useEffect(() => {
+        addEventListener("hashchange", (e) => {
+            const hashData = decodeURI(location.hash.replace(/#/, ""))
+            const border =
+                hashData === (status || {})[pc]?.hostname
+                    ? {
+                          border: "solid",
+                      }
+                    : {}
+            setHash(border)
+        })
+    }, [])
+
     return (
         <Fragment key={pc}>
             <div
                 className="card w-128 bg-base-60 shadow-xl"
                 id={(status || {})[pc]?.hostname}
+                style={hash}
             >
                 <div className="card-body">
                     <div className="avatar center">
@@ -54,7 +91,9 @@ const Status = ({ children, status, pc }: Props) => {
                             </div>
                             <div className="stat-desc">
                                 <progress
-                                    className="progress progress-info w-20"
+                                    className={`progress progress-${usageBarColor(
+                                        (status || {})[pc]?.cpu.percent
+                                    )} w-20`}
                                     value={(status || {})[pc]?.cpu.percent}
                                     max="100"
                                 />
@@ -69,7 +108,9 @@ const Status = ({ children, status, pc }: Props) => {
                             </div>
                             <div className="stat-desc">
                                 <progress
-                                    className="progress progress-info w-20"
+                                    className={`progress progress-${usageBarColor(
+                                        (status || {})[pc]?.ram.percent
+                                    )} w-20`}
                                     value={(status || {})[pc]?.ram.percent}
                                     max="100"
                                 />
@@ -84,7 +125,9 @@ const Status = ({ children, status, pc }: Props) => {
                             </div>
                             <div className="stat-desc">
                                 <progress
-                                    className="progress progress-info w-20"
+                                    className={`progress progress-${usageBarColor(
+                                        (status || {})[pc]?.storage.percent
+                                    )} w-20`}
                                     value={(status || {})[pc]?.storage.percent}
                                     max="100"
                                 />
@@ -100,7 +143,9 @@ const Status = ({ children, status, pc }: Props) => {
                                 </div>
                                 <div className="stat-desc">
                                     <progress
-                                        className="progress progress-info w-20"
+                                        className={`progress progress-${usageBarColor(
+                                            (status || {})[pc]?.gpu.usage
+                                        )} w-20`}
                                         value={(status || {})[pc]?.gpu.usage}
                                         max="100"
                                     />

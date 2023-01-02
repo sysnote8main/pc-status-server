@@ -1,7 +1,8 @@
 import Head from "next/head"
 import io, { Socket } from "socket.io-client"
 import { useRouter } from "next/router"
-import { useEffect, useState, Fragment, ChangeEvent } from "react"
+import { useEffect, useState } from "react"
+import toast, { Toaster } from "react-hot-toast"
 import { ClientData } from "../types/client"
 import styles from "../styles/Status.module.css"
 import LoadingScreen from "../components/loadingScreen"
@@ -33,8 +34,48 @@ export default function Home() {
             .on("status", (data) => {
                 setStatus(data)
             })
+            .on("toast", (data) => {
+                switch (true) {
+                    case /disconnected/.test(data.message):
+                        toast.custom(
+                            (t) => {
+                                return (
+                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-error p-3">
+                                        <div>
+                                            <p>{data.message}</p>
+                                        </div>
+                                    </div>
+                                )
+                            },
+                            {
+                                duration: data.duration,
+                            }
+                        )
+                        break
+
+                    case /connected/.test(data.message):
+                        toast.custom(
+                            (t) => {
+                                return (
+                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-info p-3">
+                                        <div>
+                                            <p>{data.message}</p>
+                                        </div>
+                                    </div>
+                                )
+                            },
+                            {
+                                duration: data.duration,
+                            }
+                        )
+                        break
+                    default:
+                        break
+                }
+            })
             .on("disconnect", () => {
                 setConnected(false)
+                setStatus({})
             })
     }, [socket])
 
@@ -58,8 +99,19 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <header>
-                <div className="navbar bg-base-50">
+
+            <div>
+                <Toaster
+                    position="top-left"
+                    reverseOrder={false}
+                    containerStyle={{
+                        top: 80,
+                    }}
+                />
+            </div>
+
+            <header className="sticky top-0 z-50">
+                <div className="navbar bg-base-50 backdrop-blur-sm shadow-lg">
                     <div className="navbar-start">
                         <div className="dropdown">
                             <label
@@ -85,6 +137,9 @@ export default function Home() {
                                 tabIndex={0}
                                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
                             >
+                                <li>
+                                    <a href="">none</a>
+                                </li>
                                 {Object.keys(status || {})
                                     .filter((pc) =>
                                         (status || {})[pc]?.hostname.includes(
@@ -166,7 +221,8 @@ export default function Home() {
             </header>
             <main
                 className={
-                    styles.main && "flex items-stretch flex-wrap justify-center"
+                    styles.main &&
+                    "relative flex items-stretch flex-wrap justify-center"
                 }
             >
                 {Object.keys(status || {})
@@ -179,7 +235,7 @@ export default function Home() {
                             Number(Boolean((status || {})[opc]?.gpu))
                     )
                     .map((pc) => (
-                        <Status status={status || {}} pc={pc} />
+                        <Status status={status || {}} pc={pc} key={pc} />
                     ))}
             </main>
         </>
