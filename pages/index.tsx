@@ -22,7 +22,7 @@ export default function Home() {
     }, [isReady])
 
     useEffect(() => {
-        setSocket(io("https://pc-stats.eov2.com"))
+        setSocket(io("https://pcss.eov2.com"))
     }, [])
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function Home() {
                         toast.custom(
                             (t) => {
                                 return (
-                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-error p-3">
+                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-error p-3 rounded-box">
                                         <div>
                                             <p>{data.message}</p>
                                         </div>
@@ -57,7 +57,7 @@ export default function Home() {
                         toast.custom(
                             (t) => {
                                 return (
-                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-info p-3">
+                                    <div className="bg-transparent backdrop-blur-sm shadow-lg text-info p-3 rounded-box">
                                         <div>
                                             <p>{data.message}</p>
                                         </div>
@@ -102,7 +102,7 @@ export default function Home() {
 
             <div>
                 <Toaster
-                    position="top-left"
+                    position="top-right"
                     reverseOrder={false}
                     containerStyle={{
                         top: 80,
@@ -113,7 +113,7 @@ export default function Home() {
             <header className="sticky top-0 z-50">
                 <div className="navbar bg-base-50 backdrop-blur-sm shadow-lg">
                     <div className="navbar-start">
-                        <div className="dropdown">
+                        <div className="dropdown dropdown-hover">
                             <label
                                 tabIndex={0}
                                 className="btn btn-ghost btn-circle"
@@ -135,7 +135,7 @@ export default function Home() {
                             </label>
                             <ul
                                 tabIndex={0}
-                                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                                className="dropdown-content menu menu-compact p-1 shadow bg-base-100 rounded-box w-52"
                             >
                                 <li>
                                     <a href="">none</a>
@@ -177,18 +177,29 @@ export default function Home() {
                                     ))}
                             </ul>
                         </div>
-                        {`Connected Computers: ${
-                            Object.keys(status || {}).length
-                        }`}
+                        {`PC: ${Object.keys(status || {}).length}`}
                     </div>
                     <div className="navbar-center">
-                        <a className="btn btn-ghost normal-case text-xl">
-                            PC Status
-                        </a>
+                        <div className="dropdown dropdown-hover">
+                            <p
+                                tabIndex={0}
+                                className="p-4 bg-base-50 bg-transparent backdrop-blur-sm"
+                            >
+                                PC Status
+                            </p>
+                            <ul
+                                tabIndex={0}
+                                className="dropdown-content menu menu-compact p-1 shadow bg-base-100 rounded-box w-52"
+                            >
+                                <li>
+                                    <label htmlFor="my-modal">About</label>
+                                </li>
+                            </ul>
+                        </div>
                         <input
                             type="text"
                             placeholder="Search here..."
-                            className="input input-bordered input-primary w-64 h-12"
+                            className="input input-bordered input-primary bg-transparent backdrop-blur-sm w-64 h-12"
                             onChange={(event) => setSearch(event.target.value)}
                         />
                     </div>
@@ -238,6 +249,46 @@ export default function Home() {
                         <Status status={status || {}} pc={pc} key={pc} />
                     ))}
             </main>
+            <input type="checkbox" id="my-modal" className="modal-toggle" />
+            <div className="modal backdrop-blur-sm z-50">
+                <div className="modal-box">
+                    <div className="modal-action">
+                        <label className="bg-transparent border-none absolute left-5 top-3">
+                            About
+                        </label>
+                        <label
+                            htmlFor="my-modal"
+                            className="btn btn-sm btn-circle absolute right-2 top-2"
+                        >
+                            ✕
+                        </label>
+                    </div>
+                    <div>
+                        <p>
+                            PC Status is a site created by{" "}
+                            <a
+                                href="https://csys64.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                csys64
+                            </a>
+                        </p>
+                        <p>
+                            Rendered By.{" "}
+                            <a
+                                href="https://nextjs.org/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                Next.js
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </>
     )
 }
