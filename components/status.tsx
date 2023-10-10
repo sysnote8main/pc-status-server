@@ -1,6 +1,11 @@
 import { Fragment, ReactNode, useEffect, useState } from "react"
 import { ClientData } from "../types/client"
 import { useRouter } from "next/router"
+import selectIcon from "../Utils/selectIcon"
+import usageBarColor from "../Utils/usageBarColor"
+import { getPercent, getCPUPercent } from "../Utils/getPercent"
+import styles from "../styles/Status.module.css"
+import progressStyle from "../styles/Progress.module.css"
 
 type Props = {
     children?: ReactNode
@@ -8,42 +13,20 @@ type Props = {
     pc: string
 }
 
-function selectIcon(osName: string): string {
-    switch (true) {
-        case /Windows/.test(osName):
-            return "/icon/os/windows.svg"
-        case /Debian/.test(osName):
-            return "/icon/os/debian.svg"
-        case /Raspbian/.test(osName):
-            return "/icon/os/raspbian.svg"
-        case /Ubuntu/.test(osName):
-            return "/icon/os/ubuntu.svg"
-        case /Arch/.test(osName):
-            return "/icon/os/arch.svg"
-        case /Fedora/.test(osName):
-            return "/icon/os/fedora.svg"
-        case /Darwin/.test(osName):
-            return "/icon/os/apple.svg"
-        default:
-            return "/icon/os/linux.svg"
-    }
-}
-
-function usageBarColor(percent: Number): string {
-    if (percent > 90) return "error"
-    if (percent > 75) return "warning"
-    return "info"
-}
-
 const Status = ({ children, status, pc }: Props) => {
     const [hash, setHash] = useState({})
     const { isReady } = useRouter()
+    const pcData = (status || {})[pc]
+    const cpuPercent = getCPUPercent(pcData.cpu.cpus)
+    const ramPercent = getPercent(pcData.ram.free, pcData.ram.total)
+    const storages = Array.isArray(pcData.storages) ? pcData.storages : [pcData.storage]
+    const storagePercent = getPercent(storages.at(0)!.free, storages.at(0)!.total)
 
     useEffect(() => {
         if (isReady) {
             const hashData = decodeURI(location.hash.replace(/#/, ""))
             const border =
-                hashData === (status || {})[pc]?.hostname
+                hashData === pcData?.hostname
                     ? {
                           border: "solid",
                       }
@@ -56,7 +39,7 @@ const Status = ({ children, status, pc }: Props) => {
         addEventListener("hashchange", (e) => {
             const hashData = decodeURI(location.hash.replace(/#/, ""))
             const border =
-                hashData === (status || {})[pc]?.hostname
+                hashData === pcData?.hostname
                     ? {
                           border: "solid",
                       }
@@ -68,33 +51,41 @@ const Status = ({ children, status, pc }: Props) => {
     return (
         <Fragment key={pc}>
             <div
-                className="card w-128 bg-base-60 shadow-xl"
-                id={(status || {})[pc]?.hostname}
+                className={"card bg-base-60 shadow-xl height-5 text-center"}
+                id={pcData?.hostname}
                 style={hash}
             >
                 <div className="card-body">
                     <div className="avatar center">
                         <div className="w-12">
-                            <img src={selectIcon((status || {})[pc]?._os)} />
+                            <img src={selectIcon(pcData?._os)} />
                         </div>
                     </div>
-                    <h2 className="card-title">
-                        {(status || {})[pc]?.hostname}
+                    <h2 className="card-title flex justify-between">
+                        {pcData?.hostname}
+                        <label
+                            htmlFor={`focus-${pcData?.hostname}-modal`}
+                            className="btn border-none bg-base-50 bg-transparent"
+                        >
+                            Focus
+                        </label>
                     </h2>
+
+                    <div>
+                        <p>used version: {pcData.version}</p>
+                    </div>
 
                     <div className="stats shadow">
                         <div className="stat">
                             <div className="stat-figure text-secondary"></div>
                             <div className="stat-title">CPU</div>
-                            <div className="stat-value">
-                                {(status || {})[pc]?.cpu.percent}%
-                            </div>
+                            <div className="stat-value">{cpuPercent}%</div>
                             <div className="stat-desc">
                                 <progress
                                     className={`progress progress-${usageBarColor(
-                                        (status || {})[pc]?.cpu.percent
-                                    )} w-20`}
-                                    value={(status || {})[pc]?.cpu.percent}
+                                        cpuPercent
+                                    )} w-20 ${progressStyle.progress}`}
+                                    value={cpuPercent}
                                     max="100"
                                 />
                             </div>
@@ -103,15 +94,13 @@ const Status = ({ children, status, pc }: Props) => {
                         <div className="stat">
                             <div className="stat-figure text-secondary"></div>
                             <div className="stat-title">RAM</div>
-                            <div className="stat-value">
-                                {(status || {})[pc]?.ram.percent}%
-                            </div>
+                            <div className="stat-value">{ramPercent}%</div>
                             <div className="stat-desc">
                                 <progress
                                     className={`progress progress-${usageBarColor(
-                                        (status || {})[pc]?.ram.percent
-                                    )} w-20`}
-                                    value={(status || {})[pc]?.ram.percent}
+                                        ramPercent
+                                    )} w-20 ${progressStyle.progress}`}
+                                    value={ramPercent}
                                     max="100"
                                 />
                             </div>
@@ -120,38 +109,46 @@ const Status = ({ children, status, pc }: Props) => {
                         <div className="stat">
                             <div className="stat-figure text-secondary"></div>
                             <div className="stat-title">Storage</div>
-                            <div className="stat-value">
-                                {(status || {})[pc]?.storage.percent}%
-                            </div>
+                            <div className="stat-value">{storagePercent}%</div>
                             <div className="stat-desc">
                                 <progress
                                     className={`progress progress-${usageBarColor(
-                                        (status || {})[pc]?.storage.percent
-                                    )} w-20`}
-                                    value={(status || {})[pc]?.storage.percent}
+                                        storagePercent
+                                    )} w-20 ${progressStyle.progress}`}
+                                    value={storagePercent}
                                     max="100"
                                 />
                             </div>
                         </div>
+                    </div>
 
-                        {(status || {})[pc]?.gpu && (
-                            <div className="stat">
-                                <div className="stat-figure text-secondary"></div>
-                                <div className="stat-title">GPU</div>
-                                <div className="stat-value">
-                                    {(status || {})[pc]?.gpu.usage}%
-                                </div>
-                                <div className="stat-desc">
-                                    <progress
-                                        className={`progress progress-${usageBarColor(
-                                            (status || {})[pc]?.gpu.usage
-                                        )} w-20`}
-                                        value={(status || {})[pc]?.gpu.usage}
-                                        max="100"
-                                    />
-                                </div>
-                            </div>
-                        )}
+                    <div className="stat">
+                        <div className="stat-figure text-secondary"></div>
+                        <div className="stat-title">GPU</div>
+                        <div className="stat-value">
+                            {(status || {})[pc]?.gpu ? (
+                                <>{(status || {})[pc]?.gpu.usage}%</>
+                            ) : (
+                                <>NaN%</>
+                            )}
+                        </div>
+                        <div className="stat-desc">
+                            {(status || {})[pc]?.gpu ? (
+                                <progress
+                                    className={`progress progress-${usageBarColor(
+                                        (status || {})[pc]?.gpu.usage
+                                    )} w-20 ${progressStyle.progress}`}
+                                    value={(status || {})[pc]?.gpu.usage}
+                                    max="100"
+                                />
+                            ) : (
+                                <progress
+                                    className={`progress w-20`}
+                                    value={0}
+                                    max="100"
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

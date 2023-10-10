@@ -7,6 +7,7 @@ import { ClientData } from "../types/client"
 import styles from "../styles/Status.module.css"
 import LoadingScreen from "../components/loadingScreen"
 import Status from "../components/status"
+import Focus from "../components/focus"
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(false)
@@ -95,7 +96,7 @@ export default function Home() {
                 <meta name="description" content="PC Status" />
                 <meta
                     name="viewport"
-                    content="width=device-width, initial-scale=1"
+                    content="width=device-width,initial-scale=0.5,minimum-scale=0.5"
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -135,7 +136,7 @@ export default function Home() {
                             </label>
                             <ul
                                 tabIndex={0}
-                                className="dropdown-content menu menu-compact p-1 shadow bg-base-100 rounded-box w-52"
+                                className="overflow-auto dropdown-content menu menu-compact p-1 shadow bg-base-100 rounded-box w-52"
                             >
                                 <li>
                                     <a href="">none</a>
@@ -192,7 +193,7 @@ export default function Home() {
                                 className="dropdown-content menu menu-compact p-1 shadow bg-base-100 rounded-box w-52"
                             >
                                 <li>
-                                    <label htmlFor="my-modal">About</label>
+                                    <label htmlFor="about-modal">About</label>
                                 </li>
                             </ul>
                         </div>
@@ -209,8 +210,7 @@ export default function Home() {
                                 type="checkbox"
                                 checked={isDark}
                                 onChange={(e) => setDark(e.target.checked)}
-                            />
-
+                            />{" "}
                             <svg
                                 className="swap-on fill-current w-5 h-5"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +218,6 @@ export default function Home() {
                             >
                                 <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
                             </svg>
-
                             <svg
                                 className="swap-off fill-current w-5 h-5"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -230,26 +229,28 @@ export default function Home() {
                     </div>
                 </div>
             </header>
-            <main
-                className={
-                    styles.main &&
-                    "relative flex items-stretch flex-wrap justify-center"
-                }
-            >
-                {Object.keys(status || {})
-                    .filter((pc) =>
-                        (status || {})[pc]?.hostname.includes(searchIndex || "")
-                    )
-                    .sort(
-                        (pc, opc) =>
-                            Number(Boolean((status || {})[pc]?.gpu)) -
-                            Number(Boolean((status || {})[opc]?.gpu))
-                    )
-                    .map((pc) => (
-                        <Status status={status || {}} pc={pc} key={pc} />
-                    ))}
+            <main className={styles.main}>
+                <ul className={styles.masonry}>
+                    {Object.keys(status || {})
+                        .filter((pc) =>
+                            (status || {})[pc]?.hostname.includes(
+                                searchIndex || ""
+                            )
+                        )
+                        .sort(
+                            (pc, opc) =>
+                                Number(Boolean((status || {})[pc]?.gpu)) -
+                                Number(Boolean((status || {})[opc]?.gpu))
+                        )
+                        .map((pc) => (
+                            <li key={pc}>
+                                <Status status={status || {}} pc={pc} />
+                            </li>
+                        ))}
+                </ul>
             </main>
-            <input type="checkbox" id="my-modal" className="modal-toggle" />
+
+            <input type="checkbox" id="about-modal" className="modal-toggle" />
             <div className="modal backdrop-blur-sm z-50">
                 <div className="modal-box">
                     <div className="modal-action">
@@ -257,8 +258,8 @@ export default function Home() {
                             About
                         </label>
                         <label
-                            htmlFor="my-modal"
-                            className="btn btn-sm btn-circle absolute right-2 top-2"
+                            htmlFor="about-modal"
+                            className="btn btn-sm btn-circle border-none absolute right-2 top-2 bg-base-50 bg-transparent"
                         >
                             ✕
                         </label>
@@ -275,8 +276,58 @@ export default function Home() {
                                 csys64
                             </a>
                         </p>
+
                         <p>
-                            Rendered By.{" "}
+                            Repository:{" "}
+                            <a
+                                href="https://github.com/Zel9278/pc-status-client"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                Client
+                            </a>{" "}
+                            <a
+                                href="https://github.com/Zel9278/pc-status-server"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                Frontend
+                            </a>{" "}
+                            <a
+                                href="https://github.com/Zel9278/pc-status-server-backend"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                Backend
+                            </a>
+                        </p>
+                        <p>
+                            CSS:{" "}
+                            <a
+                                href="https://tailwindcss.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                TailwindCSS
+                            </a>{" "}
+                            <a
+                                href="https://daisyui.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="link"
+                            >
+                                daisyUI
+                            </a>
+                        </p>
+
+                        <br />
+
+                        <p>
+                            Rendered With{" "}
                             <a
                                 href="https://nextjs.org/"
                                 target="_blank"
@@ -289,6 +340,19 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            {Object.keys(status || {})
+                .filter((pc) =>
+                    (status || {})[pc]?.hostname.includes(searchIndex || "")
+                )
+                .sort(
+                    (pc, opc) =>
+                        Number(Boolean((status || {})[pc]?.gpu)) -
+                        Number(Boolean((status || {})[opc]?.gpu))
+                )
+                .map((pc) => (
+                    <Focus status={status || {}} pc={pc} key={pc} />
+                ))}
         </>
     )
 }

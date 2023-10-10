@@ -4,25 +4,27 @@ interface CPUData {
 interface CPU {
     model: string
     cpus: CPUData[]
-    percent: number
 }
 
 interface RAM {
     free: number
     total: number
-    percent: number
+}
+
+interface Swap {
+    free: number
+    total: number
 }
 
 interface Storage {
+    name?: string
     free: number
     total: number
-    percent: number
 }
 
 interface GPUMemory {
     free: number
     total: number
-    percent: number
 }
 interface GPU {
     name: string
@@ -36,7 +38,9 @@ export interface StatusData {
     version: string
     cpu: CPU
     ram: RAM
+    swap: Swap
     storage: Storage
+    storages?: Storage[]
     uptime: number
     loadavg: number[]
     gpu: GPU
