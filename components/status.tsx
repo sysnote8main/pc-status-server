@@ -6,6 +6,7 @@ import usageBarColor from "../Utils/usageBarColor"
 import { getPercent, getCPUPercent } from "../Utils/getPercent"
 import styles from "../styles/Status.module.css"
 import progressStyle from "../styles/Progress.module.css"
+import Progressbar from "./ProgressBar"
 
 type Props = {
     children?: ReactNode
@@ -19,8 +20,13 @@ const Status = ({ children, status, pc }: Props) => {
     const pcData = (status || {})[pc]
     const cpuPercent = getCPUPercent(pcData.cpu.cpus)
     const ramPercent = getPercent(pcData.ram.free, pcData.ram.total)
-    const storages = Array.isArray(pcData.storages) ? pcData.storages : [pcData.storage]
-    const storagePercent = getPercent(storages.at(0)!.free, storages.at(0)!.total)
+    const storages = Array.isArray(pcData.storages)
+        ? pcData.storages
+        : [pcData.storage]
+    const storagePercent = getPercent(
+        storages.at(0)!.free,
+        storages.at(0)!.total
+    )
 
     useEffect(() => {
         if (isReady) {
@@ -81,12 +87,9 @@ const Status = ({ children, status, pc }: Props) => {
                             <div className="stat-title">CPU</div>
                             <div className="stat-value">{cpuPercent}%</div>
                             <div className="stat-desc">
-                                <progress
-                                    className={`progress progress-${usageBarColor(
-                                        cpuPercent
-                                    )} w-20 ${progressStyle.progress}`}
+                                <Progressbar
                                     value={cpuPercent}
-                                    max="100"
+                                    className="w-20 mx-auto my-0"
                                 />
                             </div>
                         </div>
@@ -96,12 +99,9 @@ const Status = ({ children, status, pc }: Props) => {
                             <div className="stat-title">RAM</div>
                             <div className="stat-value">{ramPercent}%</div>
                             <div className="stat-desc">
-                                <progress
-                                    className={`progress progress-${usageBarColor(
-                                        ramPercent
-                                    )} w-20 ${progressStyle.progress}`}
+                                <Progressbar
                                     value={ramPercent}
-                                    max="100"
+                                    className="w-20 mx-auto my-0"
                                 />
                             </div>
                         </div>
@@ -111,12 +111,9 @@ const Status = ({ children, status, pc }: Props) => {
                             <div className="stat-title">Storage</div>
                             <div className="stat-value">{storagePercent}%</div>
                             <div className="stat-desc">
-                                <progress
-                                    className={`progress progress-${usageBarColor(
-                                        storagePercent
-                                    )} w-20 ${progressStyle.progress}`}
+                                <Progressbar
                                     value={storagePercent}
-                                    max="100"
+                                    className="w-20 mx-auto my-0"
                                 />
                             </div>
                         </div>
@@ -134,18 +131,14 @@ const Status = ({ children, status, pc }: Props) => {
                         </div>
                         <div className="stat-desc">
                             {(status || {})[pc]?.gpu ? (
-                                <progress
-                                    className={`progress progress-${usageBarColor(
-                                        (status || {})[pc]?.gpu.usage
-                                    )} w-20 ${progressStyle.progress}`}
+                                <Progressbar
                                     value={(status || {})[pc]?.gpu.usage}
-                                    max="100"
+                                    className="w-20 mx-auto my-0"
                                 />
                             ) : (
-                                <progress
-                                    className={`progress w-20`}
+                                <Progressbar
                                     value={0}
-                                    max="100"
+                                    className="w-20 mx-auto my-0"
                                 />
                             )}
                         </div>

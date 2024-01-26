@@ -5,6 +5,7 @@ import { byteToData } from "../Utils/byteToData"
 import progressStyle from "../styles/Progress.module.css"
 import selectIcon from "../Utils/selectIcon"
 import { getCPUPercent, getPercent } from "../Utils/getPercent"
+import Progressbar from "./ProgressBar"
 
 type Props = {
     children?: ReactNode
@@ -66,12 +67,9 @@ const Focus = ({ children, status, pc }: Props) => {
                         <p>CPU: {pcStatus?.cpu.model}</p>
                         <div className="flex items-center">
                             <p>All:</p>
-                            <progress
-                                className={`progress progress-${usageBarColor(
-                                    cpuPercent
-                                )} mx-3 ${progressStyle.progress}`}
+                            <Progressbar
                                 value={cpuPercent}
-                                max="100"
+                                className="w-full mx-3"
                             />
                             <p>{Math.floor(cpuPercent)}%</p>
                         </div>
@@ -80,13 +78,10 @@ const Focus = ({ children, status, pc }: Props) => {
                                 return (
                                     <li key={i} className="flex items-center">
                                         <p>Core{i}:</p>
-                                        <progress
-                                            className={`progress progress-${usageBarColor(
-                                                cpu.cpu
-                                            )} mx-3 ${progressStyle.progress}`}
+                                        <Progressbar
                                             value={cpu.cpu}
-                                            max="100"
-                                        />{" "}
+                                            className="w-full mx-3"
+                                        />
                                         <p>{Math.floor(cpu.cpu)}%</p>
                                     </li>
                                 )
@@ -103,12 +98,9 @@ const Focus = ({ children, status, pc }: Props) => {
                         </p>
                         <div className="flex items-center">
                             <p>RAM:</p>
-                            <progress
-                                className={`progress progress-${usageBarColor(
-                                    ramPercent
-                                )} mx-3 ${progressStyle.progress}`}
+                            <Progressbar
                                 value={ramPercent}
-                                max="100"
+                                className="w-full mx-3"
                             />
                             <p>{Math.floor(ramPercent)}%</p>
                         </div>
@@ -123,12 +115,9 @@ const Focus = ({ children, status, pc }: Props) => {
                                 {byteToData(pcStatus?.swap.free)} free
                                 <div className="flex items-center">
                                     <p>Swap:</p>
-                                    <progress
-                                        className={`progress progress-${usageBarColor(
-                                            swapPercent
-                                        )} mx-3 ${progressStyle.progress}`}
+                                    <Progressbar
                                         value={swapPercent}
-                                        max="100"
+                                        className="w-full mx-3"
                                     />
                                     <p>{Math.floor(swapPercent)}%</p>
                                 </div>
@@ -152,14 +141,9 @@ const Focus = ({ children, status, pc }: Props) => {
                                             {storage.name || "Unknown Name"}
                                         </p>
                                         <div className="flex items-center">
-                                            <progress
-                                                className={`progress progress-${usageBarColor(
-                                                    storagePercent
-                                                )} mx-3 ${
-                                                    progressStyle.progress
-                                                }`}
+                                            <Progressbar
                                                 value={storagePercent}
-                                                max="100"
+                                                className="w-full mx-3"
                                             />{" "}
                                             <p>{Math.floor(storagePercent)}%</p>
                                         </div>
@@ -183,13 +167,10 @@ const Focus = ({ children, status, pc }: Props) => {
                                 <p>GPU: {pcStatus?.gpu.name}</p>
                                 <div className="flex items-center">
                                     <p>GPU:</p>
-                                    <progress
-                                        className={`progress progress-${usageBarColor(
-                                            pcStatus.gpu.usage
-                                        )} mx-3 ${progressStyle.progress}`}
+                                    <Progressbar
                                         value={pcStatus.gpu.usage}
-                                        max="100"
-                                    />
+                                        className="w-full mx-3"
+                                    />{" "}
                                     <p>{Math.floor(pcStatus.gpu.usage)}%</p>
                                 </div>
                                 <p>
@@ -212,13 +193,10 @@ const Focus = ({ children, status, pc }: Props) => {
                                 </p>
                                 <div className="flex items-center">
                                     <p>VRAM:</p>
-                                    <progress
-                                        className={`progress progress-${usageBarColor(
-                                            gpuMemPercent
-                                        )} mx-3 ${progressStyle.progress}`}
+                                    <Progressbar
                                         value={gpuMemPercent}
-                                        max="100"
-                                    />
+                                        className="w-full mx-3"
+                                    />{" "}
                                     <p>{Math.floor(gpuMemPercent)}%</p>
                                 </div>
                             </>

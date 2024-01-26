@@ -1,2 +1,19 @@
-.progress {
+.progressBar {
+    position: relative;
+    --width: 100%;
+    appearance: none;
+    overflow: hidden;
+    height: 0.5rem;
+    border-radius: 8px;
+    background-color: #424242;
+    --margin: 0 auto;
+}
+
+.progressBarUsage {
+    display: block;
+    height: 100%;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: width 0.5s ease-out, background-color 0.5s ease-out;
 }
