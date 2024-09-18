@@ -280,7 +280,7 @@ export default function Home() {
                         <p>
                             Repository:{" "}
                             <a
-                                href="https://github.com/Zel9278/pc-status-client"
+                                href="https://github.com/eoeo-org/pcsc-rs"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="link"
