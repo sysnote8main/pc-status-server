@@ -6,7 +6,6 @@
     height: 0.5rem;
     border-radius: 8px;
     background-color: #424242;
-    --margin: 0 auto;
 }
 
 .progressBarUsage {
@@ -16,4 +15,11 @@
     position: relative;
     overflow: hidden;
     transition: width 0.5s ease-out, background-color 0.5s ease-out;
+}
+
+.progress_ring__circle {
+    stroke-dasharray: 400, 400;
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
 }

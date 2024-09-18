@@ -2,10 +2,7 @@ import { Fragment, ReactNode, useEffect, useState } from "react"
 import { ClientData } from "../types/client"
 import { useRouter } from "next/router"
 import selectIcon from "../Utils/selectIcon"
-import usageBarColor from "../Utils/usageBarColor"
 import { getPercent, getCPUPercent } from "../Utils/getPercent"
-import styles from "../styles/Status.module.css"
-import progressStyle from "../styles/Progress.module.css"
 import Progressbar from "./ProgressBar"
 
 type Props = {
@@ -20,9 +17,7 @@ const Status = ({ children, status, pc }: Props) => {
     const pcData = (status || {})[pc]
     const cpuPercent = getCPUPercent(pcData.cpu.cpus)
     const ramPercent = getPercent(pcData.ram.free, pcData.ram.total)
-    const storages = Array.isArray(pcData.storages)
-        ? pcData.storages
-        : [pcData.storage]
+    const storages = pcData.storages
     const storagePercent = getPercent(
         storages.at(0)!.free,
         storages.at(0)!.total

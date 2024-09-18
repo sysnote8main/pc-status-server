@@ -31,6 +31,20 @@ interface GPU {
     usage: number
     memory: GPUMemory
 }
+interface NetWorkData {
+    name: string
+    received: number
+    transmitted: number
+}
+
+interface HistoriesData {
+    cpu: CPU
+    ram: RAM
+    swap: Swap
+    storages: Storage[]
+    gpu: GPU
+    uptime: number
+}
 
 export interface StatusData {
     _os: string
@@ -39,9 +53,10 @@ export interface StatusData {
     cpu: CPU
     ram: RAM
     swap: Swap
-    storage: Storage
-    storages?: Storage[]
+    storages: Storage[]
     uptime: number
     loadavg: number[]
     gpu: GPU
+    networks: NetWorkData[]
+    histories: HistoriesData[]
 }
