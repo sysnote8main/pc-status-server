@@ -50,7 +50,7 @@ export default function Home() {
                             },
                             {
                                 duration: data.duration,
-                            }
+                            },
                         )
                         break
 
@@ -67,7 +67,7 @@ export default function Home() {
                             },
                             {
                                 duration: data.duration,
-                            }
+                            },
                         )
                         break
                     default:
@@ -144,19 +144,21 @@ export default function Home() {
                                 {Object.keys(status || {})
                                     .filter((pc) =>
                                         (status || {})[pc]?.hostname.includes(
-                                            searchIndex || ""
-                                        )
+                                            searchIndex || "",
+                                        ),
                                     )
                                     .sort(
                                         (pc, opc) =>
                                             Number(
-                                                Boolean((status || {})[pc]?.gpu)
+                                                Boolean(
+                                                    (status || {})[pc]?.gpu,
+                                                ),
                                             ) -
                                             Number(
                                                 Boolean(
-                                                    (status || {})[opc]?.gpu
-                                                )
-                                            )
+                                                    (status || {})[opc]?.gpu,
+                                                ),
+                                            ),
                                     )
                                     .map((pc) => (
                                         <li key={pc}>
@@ -234,13 +236,13 @@ export default function Home() {
                     {Object.keys(status || {})
                         .filter((pc) =>
                             (status || {})[pc]?.hostname.includes(
-                                searchIndex || ""
-                            )
+                                searchIndex || "",
+                            ),
                         )
                         .sort(
                             (pc, opc) =>
                                 Number(Boolean((status || {})[pc]?.gpu)) -
-                                Number(Boolean((status || {})[opc]?.gpu))
+                                Number(Boolean((status || {})[opc]?.gpu)),
                         )
                         .map((pc) => (
                             <li key={pc}>
@@ -343,12 +345,12 @@ export default function Home() {
 
             {Object.keys(status || {})
                 .filter((pc) =>
-                    (status || {})[pc]?.hostname.includes(searchIndex || "")
+                    (status || {})[pc]?.hostname.includes(searchIndex || ""),
                 )
                 .sort(
                     (pc, opc) =>
                         Number(Boolean((status || {})[pc]?.gpu)) -
-                        Number(Boolean((status || {})[opc]?.gpu))
+                        Number(Boolean((status || {})[opc]?.gpu)),
                 )
                 .map((pc) => (
                     <Focus status={status || {}} pc={pc} key={pc} />
